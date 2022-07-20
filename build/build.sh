@@ -16,5 +16,6 @@ mkdir $MOD_NAME_VERSION
 cp -r $SRC_DIR/* $MOD_NAME_VERSION
 
 # package into the mod zip
+rm *.zip
 zip -r - $MOD_NAME_VERSION >$MOD_TARGET
 popd
