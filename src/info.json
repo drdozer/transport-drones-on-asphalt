@@ -1,10 +1,10 @@
 {
     "name": "Transport-Drones-On-Asphalt",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "title": "Transport Drones on Asphalt",
     "author": "drdozer",
     "homepage": "https://github.com/drdozer/transport-drones-on-asphalt",
-    "description": "Minimal mod to enable transport drones to drive on aslphalt roads",
+    "description": "q",
     "factorio_version": "1.1",
     "dependencies": [
         "base >= 1.1",

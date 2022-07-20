@@ -1,5 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.3.1
+Version: 0.1.1
+Date: 20. 07. 2022
+  Bugfixes:
+    - Switched the dependencies over so that asphalt is gated behind transport system
+    rather than the other way around
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
 Date: 19. 07. 2022
   Features:
     - Added basic integration to allow transport drones to drive on asphalt

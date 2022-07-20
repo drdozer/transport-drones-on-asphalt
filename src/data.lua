@@ -4,8 +4,9 @@
 
 -- gate transport drones behind asphalt
 local transport_system_technology = "transport-system"
+local aslphalt_technology = "Arci-asphalt"
 if data.raw.technology[transport_system_technology] then
-    table.insert(data.raw.technology[transport_system_technology].prerequisites, "Arci-asphalt")
+    table.insert(data.raw.technology[aslphalt_technology].prerequisites, transport_system_technology)
 end
 
 
