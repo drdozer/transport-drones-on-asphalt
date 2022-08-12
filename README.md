@@ -1,6 +1,9 @@
-note: depends on the following for building:
-    bash
-    jq
-    zip
+# Enable Various Road Tiles as Transport Drone Roads
 
-note: builds into the *target* directory, copying and renaming things from *src* using scripts in *build*.
+This mod allows Transport Drone trucks to drive on a variety of tiles from various mods. Currently supported:
+
+* Asphalt Roads
+* Space Exploration
+* PyIndustry
+
+The only required mod is Transport Drones. Driving on the road tiles of other mods will be enabled if that mod is installed.
