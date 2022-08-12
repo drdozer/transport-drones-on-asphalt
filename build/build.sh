@@ -1,6 +1,7 @@
 #! /bin/bash
 export SRC_DIR=${PWD}/src
 export TARGET_DIR=${PWD}/target
+export README=${PWD}/README.md
 
 ### slurp info.json into environment
 export MOD_NAME=`jq -r .name $SRC_DIR/info.json`
@@ -14,6 +15,7 @@ pushd $TARGET_DIR
 rm -r $MOD_NAME_VERSION
 mkdir $MOD_NAME_VERSION
 cp -r $SRC_DIR/* $MOD_NAME_VERSION
+cp $README $MOD_NAME_VERSION
 
 # package into the mod zip
 rm *.zip
