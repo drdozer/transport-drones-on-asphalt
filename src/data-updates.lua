@@ -2,6 +2,8 @@
 local arci_prefix = "Arci-"
 
 if mods["AsphaltPaving"] then
+    log("Adding AsphaltPaving compatibility.")
+
     local transport_system_technology = "transport-system"
     local aslphalt_technology = "Arci-asphalt"
 
@@ -14,12 +16,15 @@ if mods["AsphaltPaving"] then
     -- set the acri road tiles to being drone road tiles
     for name, value in pairs(data.raw.item) do
         if name:find(arci_prefix, 1, true) == 1 then
+            log("Enabling "..name.." as a road surface")
             value.is_road_tile = true
         end
     end
 
     -- for space exploration enable the asphalt tiles in space
     if mods["space-exploration"] then
+        log("Adding space exploration compatibility for asphalt paving.")
+
         -- set the acri road tiles to being drone road tiles
         for name, value in pairs(data.raw.item) do
             if name:find(arci_prefix, 1, true) == 1 then
@@ -31,9 +36,11 @@ end
 
 -- for py
 if mods["pyindustry"] then
+    log("Adding pyindustry compatibility.")
     -- set py-aslphalt road tiles to being drone road tiles
     for name, value in pairs(data.raw.item) do
         if name:find("py-asphalt", 1, true) == 1 then
+            log("Enabling py-asphalt as a road surface")
             value.is_road_tile = true
         end
     end
