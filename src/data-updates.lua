@@ -1,6 +1,20 @@
 -- inspired by drone-roads
 local arci_prefix = "Arci-"
 
+-- fetch the walking speed modifier for the better transport drone road surface
+local faster_modifier = 2.0
+local better_road = data.raw.tile["transport-drone-road-better"]
+if better_road then
+    -- log("Found better road")
+    local modifier = better_road.walking_speed_modifier
+    -- log("Better road walking speed modifier: ".. modifier)
+    if modifier then
+        faster_modifier = modifier
+    end
+end
+-- log("Setting boosted walking modifier for roads to "..faster_modifier)
+
+
 if mods["AsphaltPaving"] then
     log("Adding AsphaltPaving compatibility.")
 
@@ -20,6 +34,17 @@ if mods["AsphaltPaving"] then
             value.is_road_tile = true
         end
     end
+    -- and adjust their speeds
+    for name, tile in pairs(data.raw.tile) do
+        if name:find(arci_prefix, 1, true) == 1 then
+            log("Adjusting "..name.." speed bonus")
+            local old_wsm = tile.walking_speed_modifier
+            local wsm = math.max(old_wsm, faster_modifier)
+            log("Old walking speed: "..old_wsm.." updated to "..wsm)
+            tile.walking_speed_modifier = wsm
+        end
+    end
+            
 
     -- for space exploration enable the asphalt tiles in space
     if mods["space-exploration"] then
