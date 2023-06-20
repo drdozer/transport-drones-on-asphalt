@@ -1,3 +1,5 @@
+local collision_mask_util = require("collision-mask-util")
+
 -- inspired by drone-roads
 local arci_prefix = "Arci-"
 
@@ -69,4 +71,28 @@ if mods["pyindustry"] then
             value.is_road_tile = true
         end
     end
+end
+
+if mods["railloader"] then
+    log("Adding railloader compatiblity.")
+    -- All things with a collision mask containing "item-layer" will be marked by transport drones
+    -- as being a non-road entity.
+    -- Bulk Rail Loader uses composite entities.
+    -- The initially placed item is a pump, which has the "item_layer" set to true.
+    -- So we need to unset this collision mask on the pump used by BRL.
+    
+    local brl
+    local mask
+
+    brl = data.raw.pump["railloader-placement-proxy"]
+    mask = collision_mask_util.get_mask(brl)
+    collision_mask_util.remove_layer(
+        mask, "item-layer")
+    brl.collision_mask = mask
+        
+    brl = data.raw.pump["railunloader-placement-proxy"]
+    mask = collision_mask_util.get_mask(brl)
+    collision_mask_util.remove_layer(
+        mask, "item-layer")
+    brl.collision_mask = mask
 end
