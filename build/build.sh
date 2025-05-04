@@ -21,3 +21,6 @@ cp $README $MOD_NAME_VERSION
 rm *.zip
 zip -r - $MOD_NAME_VERSION >$MOD_TARGET
 popd
+
+# and done
+echo Built $MOD_TARGET
