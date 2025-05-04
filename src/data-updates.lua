@@ -17,7 +17,7 @@ end
 -- log("Setting boosted walking modifier for roads to "..faster_modifier)
 
 
-if mods["AsphaltPaving"] then
+if mods["AsphaltPaving"] or mods["AsphaltRoadsPatched"] then
     log("Adding AsphaltPaving compatibility.")
 
     local transport_system_technology = "transport-system"

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: 04. 05. 2025
+  Features:
+    - Updated for factorio 2.0
+    - Updated compattibility with forks of transport drones and asphalt roads.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.5
 Date: 20. 06. 2023
   Features:
