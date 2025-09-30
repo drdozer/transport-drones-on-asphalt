@@ -1,6 +1,6 @@
 {
     "name": "Transport-Drones-On-Asphalt",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "title": "Transport Drones on Asphalt",
     "author": "drdozer",
     "homepage": "https://github.com/drdozer/transport-drones-on-asphalt",
@@ -8,7 +8,8 @@
     "factorio_version": "2.0",
     "dependencies": [
         "base >= 1.1",
-        "? Transport_Drones_Meglinge_Fork >= 1.0.26",
+        "Transport_Drones_Drdozer_Fork >= 1.0.27",
+        "! Transport_Drones_Meglinge_Fork >= 1.0.26",
         "? AsphaltRoadsPatched >= 1.4.7",
         "? pyindustry >= 1.5.4",
         "? space-exploration >= 0.6.82",
