@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.7
+Date: 30. 09. 2025
+  Bugfixes:
+    Changed dependencies to use my forked version of transport drones as it contains a patch that
+    renabeles modded road surfafces.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.6
 Date: 04. 05. 2025
   Features:
