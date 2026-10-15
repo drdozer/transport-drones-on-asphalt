@@ -4,6 +4,34 @@ Chronological log of agent work sessions. Companion docs: `README.md`,
 `src/changelog.txt`, superproject `issues/transport-drones-*.md` +
 `issues/live-dir-stray-transport-drones-0.1.6.md`.
 
+## Session 2026-10-15 (b) — 2.1-retarget investigation (no port)
+
+Follow-up to the port session, per the retarget ticket
+(superproject `inbox/retarget-transport-drones-on-asphalt-to-2.1.md`,
+Order 1). Question: is a fv 2.0 → 2.1 retarget trivial? Answer: **no — the
+hard dep's content breaks on 2.1, and both fix paths are content changes**.
+
+- Fork content probe (`.cache/retarget-probe/`, dlc 2.1.21; fork symlinked
+  from `managed/Transport_Drones_Drdozer_Fork` with fv temporarily bumped to
+  2.1, then reverted — probe only, fork left clean): **data-stage crash**
+  `data/entities/transport_depot/transport_depot.lua:72: attempt to call
+  global 'assembler3pipepictures' (a nil value)`.
+- Root cause: 2.0 base shipped `assembler3pipepictures()` as a global
+  function (`entity/assemblerpipes.lua:43`); 2.1 base moved it to a module
+  table (`require("prototypes.entity.assembler-pictures").assembler3pipepictures`,
+  consumed WITHOUT a call — `entities.lua:3279`). `pipecoverspictures()` is
+  still a global. Fork has exactly 3 call sites, all in `transport_depot.lua`.
+- Portal facts: upstream `Transport_Drones` was **officially ported to 2.1**
+  (2.1.0, 2026-08-12; latest 2.1.4, 2026-09-27, actively maintained), and the
+  `is_road_tile` extension API this mod depends on dates to upstream 1.0.5
+  and persists in the 2.1 line (2.1.3 even tunes the fast-road recipe).
+- Paths recorded in the ticket: (A) port the fork (3 known fixes + unknown
+  further breaks; changes the fork's maintained-only-2.0 status) vs (B)
+  switch this mod's dep to upstream `Transport_Drones >= 2.1.0` (dependency
+  migration; needs authenticated portal download of 2.1.4 + pairing probe +
+  integration-branch verification). Path B likely obsoletes the fork here.
+  Decision needed from the human — no port executed.
+
 ## Session 2026-10-15 — structural port to superproject standard
 
 Starting point: 0.1.7 at `2141f2a`, `src/` deployable layout, fv "2.0",
