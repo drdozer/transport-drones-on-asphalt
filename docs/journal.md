@@ -31,6 +31,10 @@ hard dep's content breaks on 2.1, and both fix paths are content changes**.
   migration; needs authenticated portal download of 2.1.4 + pairing probe +
   integration-branch verification). Path B likely obsoletes the fork here.
   Decision needed from the human — no port executed.
+- **Decision (later same day)**: retarget work PAUSED — Transport_Drones
+  has multiple forks and integrating all of them is the real complexity;
+  neither path chosen. Ticket parked in superproject `blocked/` (human-
+  instruction resume only). Mod stays fv 2.0, unlinked.
 
 ## Session 2026-10-15 — structural port to superproject standard
 
