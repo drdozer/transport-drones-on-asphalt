@@ -35,6 +35,14 @@ hard dep's content breaks on 2.1, and both fix paths are content changes**.
   has multiple forks and integrating all of them is the real complexity;
   neither path chosen. Ticket parked in superproject `blocked/` (human-
   instruction resume only). Mod stays fv 2.0, unlinked.
+- **Decision 2026-10-16 (superproject)**: UNPARKED — Path B chosen. Dep
+  switches to Klonan's official `Transport_Drones >= 2.1.4` (fv 2.1; the
+  original author resumed — his `2.1-update` branch is the official port).
+  The drdozer fork is retired (GitHub repo archived, submodule removed;
+  landscape: superproject `docs/transport-drones-fork-landscape.md`). Work
+  resumed under superproject inbox ticket
+  `retarget-transport-drones-on-asphalt-to-2.1.md` (fv bump, dep switch,
+  `is_road_tile` verification on 2.1.4, retarget gate, 0.2.0 ship).
 
 ## Session 2026-10-15 — structural port to superproject standard
 
