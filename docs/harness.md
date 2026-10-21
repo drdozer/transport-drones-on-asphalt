@@ -84,7 +84,9 @@ normalisation is load-bearing for the cobble ford — Transport_Drones'
 road processing plus water-ford's stamps leave the ford either
 water-placeability-broken or with a mask the road network's load-path
 rebuild (road_network.lua get_tiles: road-exact mask required) silently
-drops; see docs/journal.md round 2b.
+drops; see docs/journal.md round 2b (also lodged as a ticket with the
+Transport Drones maintainer 2026-10-21 — a documented third-party
+road-registration hook upstream would retire the normalisation).
 
 Run:
 

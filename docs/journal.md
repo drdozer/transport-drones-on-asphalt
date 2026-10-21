@@ -308,6 +308,14 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
 
 ## 2026-10-21 — round 2b: water-ford integration (0.2.2)
 
+- **Upstream ticket lodged (2026-10-21)**: the two-path admission mismatch
+  (road-list vs road-exact mask) and `process_road_item`'s unconditional
+  rewrite of foreign road items' `place_as_tile` (which inverts the ford's
+  water-only rule without this mod's normalisation) were raised with the
+  Transport Drones maintainer to discuss the pain point — a cleaner or
+  documented third-party road-registration hook upstream would retire the
+  `mod/data-final-fixes.lua` normalisation; until then the normalisation
+  stays load-bearing (see below + `docs/harness.md`).
 - **Scope (maintainer request)**: water-ford = optional dep (>= 1.1.0); the
   cobblestone ladder joins the drone road set — cobblestone-ford + cobblestone-
   path via `is_road_tile` (the 2.x item prototype lever Transport_Drones'
