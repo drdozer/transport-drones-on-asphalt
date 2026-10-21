@@ -1,4 +1,5 @@
 *log
 target/
+dist/
 .frontmatter
 frontmatter.json
