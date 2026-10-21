@@ -1,4 +1,4 @@
 *log
 dist/
 .frontmatter
-frontmatter.json
+frontmatter.json__pycache__/
