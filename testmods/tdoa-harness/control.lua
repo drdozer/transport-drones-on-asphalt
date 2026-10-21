@@ -76,6 +76,13 @@ local script_data = storage.tdoa_harness or
   supply_count = {}, supply_drain_tick = {},
   filled = {}, verdict = {}, reason = {},
   results_written = false, road_set = nil,
+
+  -- showcase mode (tdoa-showcase wrapper mod / testing/showcase.py):
+  -- milestone screenshots at fixed world coordinates. Shot jobs are PLAIN
+  -- DATA records (function closures do not survive the save) fired in order.
+  showcase = false, shot_next = 1, shots_requested = 0,
+  shots_taken = {}, shots_pending = {},
+  shots_transit = false, shots_fuel = false, showcase_anchor = nil,
 }
 
 -- JSON out: all records are flat (string keys, string/number/boolean values).
@@ -328,6 +335,119 @@ local function poll_rig(rig)
   end
 end
 
+-- ---------------------------------------------------------------------------
+-- showcase mode: milestone screenshots. Enabled via this harness's remote
+-- interface by the tdoa-showcase wrapper mod — mod globals do NOT cross mod
+-- environments (each control.lua gets its own env; only storage / remote
+-- cross). All frames are in-game ABSOLUTE coordinates; zoom z renders
+-- (32 * z) px per tile. Headless sessions ignore take_screenshot entirely
+-- (engine: "if running headless, this function will do nothing") — showcase
+-- runs must be the windowed client (testing/showcase.py).
+-- ---------------------------------------------------------------------------
+
+local function seq_label(name)
+  local label = string.format("%02d-%s", script_data.shot_next, name)
+  script_data.shot_next = script_data.shot_next + 1
+  return label
+end
+
+local function schedule_shot(when, frame)
+  frame.when = when
+  frame.label = seq_label(frame.label)
+  script_data.shots_pending[#script_data.shots_pending + 1] = frame
+end
+
+local function do_shot(frame)
+  local path = "tdoa-harness/showcase/" .. frame.label .. ".png"
+  script_data.shots_requested = script_data.shots_requested + 1
+  local ok, res = pcall(function()
+    game.take_screenshot{
+      position = { (frame.x0 + frame.x1) / 2, (frame.y0 + frame.y1) / 2 },
+      resolution = { x = math.ceil((frame.x1 - frame.x0 + 1) * 32 * frame.zoom) + 1,
+                     y = math.ceil((frame.y1 - frame.y0 + 1) * 32 * frame.zoom) + 1 },
+      zoom = frame.zoom, surface = 1, path = path,
+      show_entity_info = true, show_gui = false,
+      hide_fog = true, hide_clouds = true, daytime = 0,
+      force_render = true, anti_alias = true,
+    }
+  end)
+  if ok then
+    script_data.shots_taken[#script_data.shots_taken + 1] = path
+  else
+    path = "FAILED " .. path .. ": " .. tostring(res)
+    script_data.shots_taken[#script_data.shots_taken + 1] = path
+  end
+  log("HARNESS: screenshot " .. path)
+end
+
+-- frame helpers: rig strip = full road length; gap close = the 2x2 gap area
+local function rig_frame(rig, label, zoom)
+  return { label = label, x0 = X_MIN - 6, x1 = X_MAX + 6,
+    y0 = rig.oy + STUB_Y0 - 8, y1 = rig.oy + STUB_Y1 + 10, zoom = zoom or 0.75 }
+end
+
+local function gap_frame(rig, label, zoom)
+  return { label = label, x0 = -20, x1 = 22,
+    y0 = rig.oy + LANE_TOP - 11, y1 = rig.oy + LANE_TOP + 11, zoom = zoom or 1 }
+end
+
+local function wide_frame(rigs_list, label)
+  local n = #rigs_list
+  return { label = label, x0 = X_MIN - 6, x1 = X_MAX + 6,
+    y0 = RIG_PITCH + STUB_Y0 - 10, y1 = n * RIG_PITCH + STUB_Y1 + 10,
+    zoom = math.min(0.55,
+      1600 / ((X_MAX - X_MIN + 13) * 32),
+      3600 / ((n * RIG_PITCH + 40) * 32)) }
+end
+
+-- fires due shot jobs; once the anchor rig's drone has collected at the
+-- supply (drain_tick) it schedules the homeward burst — by the observed
+-- fill->collect flight rate (~0.07 tiles/tick) the drone crosses the gap
+-- ~drain+346..466 and approaches the request depot ~drain+800..860
+local function showcase_tick()
+  if not script_data.showcase or script_data.results_written then return end
+  local pending = script_data.shots_pending
+  if #pending > 0 then
+    local now = game.tick
+    local rest = {}
+    for _, frame in ipairs(pending) do
+      if frame.when <= now then do_shot(frame) else rest[#rest + 1] = frame end
+    end
+    script_data.shots_pending = rest
+  end
+  local anchor = rigs and script_data.showcase_anchor and rigs[script_data.showcase_anchor]
+  if not anchor then return end
+  local drain = script_data.supply_drain_tick[anchor.index]
+  if drain and not script_data.shots_transit then
+    script_data.shots_transit = true
+    local k = anchor.key
+    schedule_shot(drain + 6, { label = "pick-" .. k, x0 = 10, x1 = 42,
+      y0 = anchor.oy + LANE_TOP - 11, y1 = anchor.oy + LANE_TOP + 11, zoom = 1 })
+    for _, d in ipairs({ 346, 386, 426, 466 }) do
+      schedule_shot(drain + d, rig_frame(anchor, "transit-" .. d .. "-" .. k, 1))
+    end
+    for _, d in ipairs({ 800, 830, 860 }) do
+      schedule_shot(drain + d, { label = "arrival-" .. d .. "-" .. k,
+        x0 = -45, x1 = 2, y0 = anchor.oy + LANE_TOP - 11,
+        y1 = anchor.oy + LANE_TOP + 11, zoom = 1 })
+    end
+  end
+  local fuel = script_data.fuel_tick[anchor.index]
+  if fuel and not script_data.shots_fuel then
+    script_data.shots_fuel = true
+    schedule_shot(fuel + 40, rig_frame(anchor, "fuel-truck-" .. anchor.key, 0.75))
+  end
+end
+
+remote.add_interface("tdoa_harness", {
+  enable_showcase = function()
+    script_data.showcase = true
+    script_data.shots_pending = script_data.shots_pending or {}
+    script_data.shot_next = script_data.shot_next or 1
+    log("HARNESS: showcase enabled via remote interface")
+  end,
+})
+
 script.on_event(defines.events.on_tick, function(event)
   if script_data.results_written then return end
   local tick = event.tick
@@ -377,6 +497,22 @@ script.on_event(defines.events.on_tick, function(event)
       script_data.errors = {}
       script_data.error = nil
       log("HARNESS: build complete at tick " .. tick .. " (cargo " .. cargo .. "); timeline anchored")
+      if script_data.showcase then
+        schedule_shot(tick + 6, wide_frame(rigs_list, "build-wide"))
+        for _, rig in ipairs(rigs_list) do
+          if not rig.skip and rig.expect == "road" then
+            script_data.showcase_anchor = rig.index
+            schedule_shot(tick + 8, rig_frame(rig, "build-" .. rig.key))
+            break
+          end
+        end
+        for _, rig in ipairs(rigs_list) do
+          if not rig.skip and rig.expect == "blocked" and rig.fill_tile then
+            schedule_shot(tick + 8, rig_frame(rig, "build-" .. rig.key))
+            break
+          end
+        end
+      end
       return
     end
     -- failed: wipe what we placed (purge is destructive per rig) and retry next tick
@@ -414,6 +550,11 @@ script.on_event(defines.events.on_tick, function(event)
           log("HARNESS: fill error in rig " .. rig.key .. ": " .. script_data.errors[rig.index])
         end
       end
+    end
+    if script_data.showcase and script_data.showcase_anchor and rigs[script_data.showcase_anchor] then
+      local anchor = rigs[script_data.showcase_anchor]
+      schedule_shot(base + FILL_REL + 14,
+        gap_frame(anchor, "fill-" .. anchor.key, 1.5))
     end
   elseif rel > FILL_REL and rel % POLL_CADENCE == 0 then
     for _, rig in ipairs(rigs) do
@@ -473,8 +614,17 @@ script.on_event(defines.events.on_tick, function(event)
         end
       end
     end
+    if script_data.showcase then
+      do_shot(wide_frame(rigs, "end-wide"))
+      if script_data.showcase_anchor then
+        do_shot(rig_frame(rigs[script_data.showcase_anchor],
+          "end-" .. rigs[script_data.showcase_anchor].key))
+      end
+    end
     write_results()
   end
+
+  showcase_tick()
 end)
 
 function write_results()
@@ -515,6 +665,7 @@ function write_results()
     if rec.verdict == "fail" or rec.verdict == "harness-invalid" then any_bad = true end
     out.cases[#out.cases + 1] = rec
   end
+  if script_data.showcase then out.showcase_shots = script_data.shots_taken end
   out.overall = any_bad and "fail" or "pass"
   helpers.write_file("tdoa-harness/results.json", json_encode(out) .. "\n")
   log("HARNESS: results written (" .. out.overall .. ", " .. #out.cases .. " cases)")

@@ -1,0 +1,9 @@
+{
+    "name": "tdoa-showcase",
+    "version": "0.1.0",
+    "title": "tdoa harness - showcase wrapper",
+    "author": "drdozer",
+    "factorio_version": "2.1",
+    "description": "Enables the tdoa-harness driver's screenshot milestones via its remote interface (mod globals do not cross mod environments). Enabled only by testing/showcase.py; dev-only, not for release.",
+    "dependencies": ["tdoa-harness"]
+}

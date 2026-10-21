@@ -89,3 +89,21 @@ overlays the harness onto each provisioned env by symlinks, and leaves the
 envs untouched. 2026-10-21 matrix result: **solo 5 pass/3 skipped,
 retarget 71 pass/1 skipped, py 72 pass — zero fails**; every delivered case
 proved by a real supply drain through the filled gap.
+
+## Showcase (visual runs)
+
+Headless runs can't render — `game.take_screenshot` does nothing there — so
+the visual evidence comes from a windowed client:
+
+    python3 testing/showcase.py                # solo env; add an env stem to change
+
+It reuses the matrix runner's scratch build, adds the `tdoa-showcase`
+wrapper testmod (its first-tick call to the harness's `tdoa_harness`
+remote interface arms the driver's showcase milestones — mod globals do not
+cross mod environments), then opens the pre-created deterministic save in a
+windowed singleplayer client on DISPLAY=:0 (`--load-game`; the client runs
+the matrix live on the desktop). The driver screenshots at fixed world
+coordinates (32 px/tile × zoom; frames cover the matrix column, the anchor
+rig strip, the fill and the homeward drone crossing/approaching);
+PNGs land in `<scratch>/script-output/tdoa-harness/showcase/` and gwenview
+opens on them. The wrapper testmod is dev-only, like the harness itself.

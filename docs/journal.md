@@ -286,3 +286,22 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   maintainer-gated (BLOCKED BY the water-ford feature ticket). The
   py-branch asymmetry (no walking boost / no tech gate) stands recorded for
   the maintainer's call.
+
+## 2026-10-21 — harness showcase (visual round)
+
+- `testing/showcase.py`: the windowed client opens the runner's pre-created
+  save and the driver's showcase milestones render the matrix in-game —
+  `take_screenshot` does NOTHING headless (engine-documented), so the shots
+  can only come from a real client run. Wrapper testmod `tdoa-showcase`
+  arms the milestones through the harness's `tdoa_harness` REMOTE interface
+  (mod globals do not cross mod environments — the `_G`-flag idea dies here;
+  remote + storage are the only sanctioned channels). Shot jobs are plain
+  data in script_data (closures don't survive saves).
+- Solo-run result: 15 shots (build wide × 2 rigs, fill close-up, fuel-truck
+  hop, homeward-drone burst 346–860, deadline doubles); sim true-60-UPS
+  (~85 s). One run froze ~tick 730 with NO log line/error — singleplayer
+  silent pause; refocused via xdotool and the SAME save then ran to verdict
+  unattended. Also verified: the WINDOWED client ignores `--rcon-port`
+  (connection refused; rcon is server-scoped) and config keys
+  `full-screen=false` / `master-volume=0` (hyphenated, [graphics]/[sound]).
+- Screenshots displayed via gwenview on :0 (never read into chat).
