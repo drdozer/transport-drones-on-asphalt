@@ -348,3 +348,10 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   freeze" was the singleplayer LANDING DIALOGUE (cleared by pressing Tab) —
   not a sim stall. Next showcase run should send Tab (xdotool key Tab) at
   launch; recorded, fix deferred until that run happens (testing.md §6.3).
+
+- **Portal audit (same round)**: the mod is ALREADY ON THE PORTAL (0.1.6,
+  MIT, category content, 1 legacy image, 1185-char 0.1.7-era description) —
+  the 0.2.2 ship = release-upload (init_upload), with page polish via
+  edit_details + the gallery sync; the dry-run plan is READY. LICENSE = MIT
+  per the portal (no repo file yet — candidate follow-up); repo is 11
+  commits ahead of origin (push = maintainer's call).
