@@ -19,9 +19,10 @@ layout 2026-10-21, matching the other own-mods; do NOT reintroduce `src/`
 or root-level layouts). `mod/` = info.json, data-updates.lua (~98 lines,
 the whole mod), changelog.txt, thumbnail.png. **No data.lua, no control.lua,
 no locale/** (runtime log strings are plain English — acceptable for logs).
-Root: `envs/retarget-smoke.toml` (hermetic retarget-gate smoke),
+Root: `envs/` (`retarget-smoke.toml` — dlc gate;
+`py-smoke.toml` — py on the DLC-less 2.1 experimental install),
 `README.md`, `docs/`. Live-linked in the dlc install as
-`Transport-Drones-On-Asphalt` (0.2.0).
+`Transport-Drones-On-Asphalt` (0.2.1).
 
 ## Invariants
 
@@ -56,20 +57,26 @@ them. Build ONLY via `devctl mods build`.
 
 `base >= 2.1.0`, `Transport_Drones >= 2.1.4` (hard),
 `? AsphaltRoadsPatched >= 1.5.0` (the fv-2.1 line — same floor as civtorio;
-1.4.x is fv-2.0-only), `? pyindustry >= 1.5.4`, `? space-exploration >= 0.6.82`,
-`? railloader >= 1.1.6` (the last three floors are pre-2.1 but satisfiable
-by their fv-2.1 lines; verified surfaces: pyindustry 3.1.6, AsphaltRoadsPatched
-1.5.0 — see `docs/journal.md`). No py code branches beyond pyindustry asphalt
-tiles.
+1.4.x is fv-2.0-only), `? pyindustry >= 3.1.6` (the py-asphalt provider;
+floor = the verified fv-2.1 surface), `? space-exploration >= 0.6.82`,
+`? railloader >= 1.1.6` (the last two floors are pre-2.1 but satisfiable
+by their fv-2.1 lines; verified surfaces: pyindustry 3.1.6,
+AsphaltRoadsPatched 1.5.0 — see `docs/journal.md`). No py code branches
+beyond pyindustry asphalt tiles. **py loads refuse the Space Age DLC**
+(pypostprocessing hard-guards space-age) — py-inclusive envs must target
+the DLC-less `factorio_2_experimental` install.
 
 ## Verification quick recipe
 
 - Hermetic smoke: `devctl mods check transport-drones-on-asphalt --env
   retarget-smoke` — env spec `envs/retarget-smoke.toml` (tdoa + official
   Transport_Drones 2.1.4 + AsphaltRoadsPatched 1.5.0 via stub; exact set is
-  the spec's contract). Branch-fire evidence is in the env's
+  the spec's contract) and `--env py-smoke` for the py branch (envs/
+  py-smoke.toml on `factorio_2_experimental` — py refuses the Space Age
+  DLC). Branch-fire evidence is in each env's
   `factorio-current.log` ("Adding AsphaltPaving compatibility.",
-  "Enabling Arci-...") — the data-stage-only invariant makes the load smoke
+  "Enabling Arci-...", "Adding pyindustry compatibility.", "Enabling
+  py-asphalt...") — the data-stage-only invariant makes the load smoke
   a meaningful gate.
 - Hand-rigged scratch probes (`.cache/transport-drones-port/` pattern)
   are superseded by the env spec; keep rigs out.

@@ -1,0 +1,48 @@
+# Hermetic py-integration smoke for transport-drones-on-asphalt: the py branch
+# (keys on mods["pyindustry"] + items prefixed py-asphalt) with the real
+# provider present. Runs on the DLC-less 2.1 experimental install — py mods
+# refuse the Space Age DLC (pypostprocessing hard-errors on space-age), and
+# the engine loads owned data-dir DLC mods regardless of the disabled flags
+# (docs/test-envs.md empirical correction), so no py-inclusive load can pass
+# on the 'dlc' install. This env is the load-level proof for info.json's
+# `? pyindustry >= 3.1.6` floor; behaviour/route testing of the py branch
+# stays in round 2 (retarget ticket task 8).
+# Provisions .cache/envs/factorio_2_experimental/py-smoke-<hash8>/ — format
+# contract: docs/test-envs.md (superproject).
+spec_version = 1
+description = "tdoa py smoke: tdoa + Transport_Drones 2.1.4 + AsphaltRoadsPatched 1.5.0 + pyindustry 3.1.6 (py-asphalt provider) + chased ~ deps, on the DLC-less 2.1 experimental install"
+
+install = "factorio_2_experimental"
+
+# tdoa (mod/ root) is the implicit root. Transport_Drones is the hard portal
+# dep; pypostprocessing/pyindustrygraphics are pyindustry's hard deps (chased,
+# ~-same-minor bounds). pycoalprocessing/pyfusionenergy stay optional-absent.
+roots = []
+chase_deps = true
+without = []
+
+# Optional deps enter only via stub (docs/test-envs.md v0 contract).
+# AsphaltRoadsPatched: the Arci- branch also fires here (same set as
+# retarget-smoke, proving both optional branches coexist). pyindustry: the
+# provider of py-asphalt — the real 3.1.6 zip resolves via pins/cache.
+stub = ["AsphaltRoadsPatched", "pyindustry"]
+
+# Availability: pypostprocessing/pyindustrygraphics are dlc-install zips and
+# NOT in the shared cache — fetched here once, then cached offline.
+fetch = [
+  "Transport_Drones@2.1.4",
+  "AsphaltRoadsPatched@1.5.0",
+  "pyindustry@3.1.6",
+  "pypostprocessing@3.1.6",
+  "pyindustrygraphics@3.1.1",
+]
+
+[pins]
+# Determinism: exactly the surfaces info.json 0.2.1 floors; the ~ bounds
+# (pyindustry: pypostprocessing >= 3.1.5, pyindustrygraphics >= 3.1.0) are
+# satisfied same-minor by these pins.
+Transport_Drones = "2.1.4"
+AsphaltRoadsPatched = "1.5.0"
+pyindustry = "3.1.6"
+pypostprocessing = "3.1.6"
+pyindustrygraphics = "3.1.1"

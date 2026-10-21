@@ -183,3 +183,42 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   `AGENTS.md`, `dist/` (gitignored). Notable absence vs siblings: no
   `portal/` yet — the 0.2.0 upload decision is still the maintainer's;
   add the portal page source when that round happens.
+
+## 2026-10-21 — py optional dep hardened: 0.2.1, py-smoke env
+
+- **Provider verified by zip inspection** (not carried from the earlier
+  note): pyindustry 3.1.6 (fv 2.1) ships the `py-asphalt` item+tile pair
+  (`prototypes/tiles/py-asphalt.lua`); name/fv confirmed from its info.json.
+  The `? pyindustry` optional dep was therefore already pointed at the
+  right mod — but its floor `>= 1.5.4` names a version that cannot load on
+  fv 2.1 (same defect class as the old ARP floor) → **0.2.1 raises it to
+  `>= 3.1.6`**, the verified surface (changelog Bugfixes entry, mirroring
+  the 0.1.7 dependency-fix precedent).
+- **py-vs-SpaceAge finding (load-level, environment)**: pyindustry's hard
+  dep `pypostprocessing` hard-errors "The Space Age mod is not currently
+  compatible with Pyanodons" at data stage, and the engine loads owned
+  data-dir DLC mods regardless of the env's disabled flags (test-envs
+  empirical correction) — so NO py-inclusive load can pass on the dlc
+  install. First py-smoke attempt on dlc failed exactly there; not tdoa.
+- **envs/py-smoke.toml (new)**: py-inclusive smoke on
+  `factorio_2_experimental` (v2.1.21, DLC-less data dir — base+core only,
+  satisfying pyindustry's `base >= 2.1.21`). 6 mods: tdoa + TD 2.1.4 +
+  ARP 1.5.0 (both branches coexist) + pyindustry 3.1.6 + chased ~ deps
+  pypostprocessing 3.1.6 / pyindustrygraphics 3.1.1 (2 zips portal-fetched,
+  sha1-ok). **PASS**: "Adding pyindustry compatibility." + "Enabling
+  py-asphalt as a road surface" in the env log, 0 errors; dump shows
+  py-asphalt item `is_road_tile: true`, tile keeps pyindustry's own wsm 3.25
+  (tdoa applies NO py walking boost — the asymmetry the ticket flagged for
+  maintainer confirmation in round 2, task 8).
+- **retarget-smoke.toml** reverted to the 3-mod dlc gate shape (py removed
+  with an explanatory comment) — the standing retarget gate stays green on
+  dlc: PASS re-run unchanged (24× Arci, 0 errors).
+- **devctl fix (superproject lib/, selftested)**: envspec's dep parser only
+  knew `~` as a suffix operator — Factorio's `~ name >= a.b.c` PREFIX form
+  (pyindustry ships it) parsed the name with the tilde attached and the
+  chase missed pypostprocessing. Fixed: prefix stripped, comparator kept,
+  same-minor anchor carried separately (check_constraint applies both);
+  bare `~ name` (no bound) is a loud parse error. New selftest block 7a-p;
+  battery green; docs/test-envs.md contract text updated.
+- Status quo: dist/ has 0.2.1 zip; live link tracks mod/ root (0.2.1);
+  portal upload still the maintainer's call.
