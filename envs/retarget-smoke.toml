@@ -3,7 +3,7 @@
 # docs/test-envs.md (superproject). Re-provision after editing; changed
 # specs land in a fresh env.
 spec_version = 1
-description = "tdoa retarget smoke: owning project live-linked, official Transport_Drones 2.1.4 hard dep, AsphaltRoadsPatched 1.5.0 (civtorio's fork line) exercised via stub, DLC mods disabled"
+description = "tdoa retarget smoke: owning project live-linked, official Transport_Drones 2.1.4 hard dep, AsphaltRoadsPatched 1.5.0 (civtorio's fork line) + pyindustry 3.1.6 (py-asphalt provider) exercised via stub, DLC mods disabled"
 
 install = "dlc"
 
@@ -17,10 +17,14 @@ without = []
 # Optional deps are never chased (test-envs v0 contract) — they enter only via
 # stub. AsphaltRoadsPatched is stubbed so the Arci- tile/tech-gate branch
 # actually fires at data stage; the real 1.5.0 zip exists (install + cache),
-# so the stub resolves to the real mod, not a synthesis. The other optional
-# deps (pyindustry, space-exploration, railloader) stay OUT of this smoke:
-# round-2 scope per maintainer (retarget ticket tasks 7-10).
-stub = ["AsphaltRoadsPatched"]
+# so the stub resolves to the real mod, not a synthesis.
+# pyindustry is likewise stubbed (provider of the py-asphalt item/tile —
+# zip-verified 2026-10-21) so its branch fires too; its hard ~ deps
+# (pypostprocessing 3.1.6, pyindustrygraphics 3.1.1 — both in the install)
+# chase with it. Its OPTIONAL py-planet deps are NOT stubbed.
+# space-exploration / railloader stay OUT of this smoke: round-2 scope per
+# maintainer (retarget ticket tasks 7-10).
+stub = ["AsphaltRoadsPatched", "pyindustry"]
 
 # Availability: pinned fv-2.1-line releases; already in the shared cache
 # (populated by civtorio's bundle work) — exact version entries short-circuit
@@ -28,9 +32,11 @@ stub = ["AsphaltRoadsPatched"]
 fetch = [
   "Transport_Drones@2.1.4",
   "AsphaltRoadsPatched@1.5.0",
+  "pyindustry@3.1.6",
 ]
 
 [pins]
-# Determinism: the retarget gate pins exactly what info.json 0.2.0 floors.
+# Determinism: the retarget gate pins exactly what info.json 0.2.1 floors.
 Transport_Drones = "2.1.4"
 AsphaltRoadsPatched = "1.5.0"
+pyindustry = "3.1.6"
