@@ -113,3 +113,48 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   `port-transport-drones-on-asphalt.md` removed after push.
 - Next: `inbox/port-civtorio.md` (Order 5, last; generation-based, no
   data.lua/control.lua; inventory-first; fv 2.1).
+
+## 2026-10-21 — 2.1 retarget (Path B) shipped as 0.2.0 (round 1)
+
+- **Structure**: already conforms — `src/` deployable root is a first-class
+  devctl layout (mod AGENTS says do NOT churn to `mod/`); devctl builds it;
+  docs/AGENTS/journal in place. Only addition: `envs/retarget-smoke.toml`
+  (first env spec for this project).
+- **info.json 0.2.0**: fv "2.0"→"2.1"; hard dep
+  `Transport_Drones_Drdozer_Fork >= 1.0.27` → `Transport_Drones >= 2.1.4`
+  (official; fork retired 2026-10-16, Path B); meglinge `!` conflict dropped
+  (line retired); `base >= 1.1` → `>= 2.1.0` (matches the dep floor per
+  ticket task 1); `? AsphaltRoadsPatched >= 1.4.7` → `>= 1.5.0` — the
+  maintainer's instruction: "the fork of asphalt roads currently used in
+  civtorio" — civtorio's info.json pins `AsphaltRoadsPatched >= 1.5.0`,
+  i.e. the same fork family already targeted, raised to its fv-2.1 line
+  (1.4.x is fv-2.0-only). pyindustry/SE/railloader floors left as-is: they
+  are minimum-versions, satisfiable by their fv-2.1 series lines; verified
+  2.1 surfaces so far are pyindustry 3.1.6 and ARP 1.5.0.
+- **No code changes**: all branches are data-stage and presence-gated
+  (AGENTS invariant 1); none referenced the fork by name.
+- **Smoke (the only testing, per maintainer)**: env spec
+  `envs/retarget-smoke.toml` (dlc, game 2.1.23; implicit root + pinned
+  `Transport_Drones@2.1.4` cache zip + `AsphaltRoadsPatched@1.5.0` via
+  stub-resolved real zip — optional deps only enter via stub,
+  docs/test-envs.md v0). `devctl mods check … --env retarget-smoke` →
+  **PASS**, rc=0, 0 game-log errors. Branch evidence in the env's
+  `factorio-current.log`: "Adding AsphaltPaving compatibility." +
+  24× "Enabling Arci-*" (is_road_tile) + 65× "Adjusting Arci-*"
+  (walking-speed). Tech-gate insert ran (would be a nil-index error
+  otherwise). pyindustry/SE/railloader branches inert (mods absent by spec
+  design — round-2 scope).
+- **Relink**: `devctl mods link transport-drones-on-asphalt dlc` → live
+  (`…/factorio_2_dlc/mods/Transport-Drones-On-Asphalt` → src/). Status
+  flagged `zip-shadowed`: superseded 0.1.7 deploy-era zip still in the live
+  dir (never portal-published; portal has 0.1.6) — cleared by hand (dist/
+  keeps the artifact), matching the 2026-10-20 stray-sweep precedent.
+- **Deferred to round 2 (maintainer)**: retarget ticket tasks 7-10 —
+  automated interop harness (2×2-block route cases), pyindustry scope,
+  ARP tile matrix, water-ford cobblestone compat (task 10 also BLOCKED BY
+  `inbox/feature-cobblestone-road-ford.md`; no other mods touched per
+  maintainer). Dump-diff (--against) likewise deferred; diff baseline =
+  the env's data-raw-dump once round 2 lands.
+- **Portal upload**: NOT done — release publishing is the maintainer's
+  explicit call (superproject ship-flow rule: never publish without
+  approval). 0.2.0 zip built in dist/, ready.

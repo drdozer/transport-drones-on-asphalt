@@ -1,0 +1,36 @@
+# Hermetic retarget-gate smoke for transport-drones-on-asphalt (fv 2.0 -> 2.1, Path B).
+# Provisions .cache/envs/dlc/retarget-smoke-<hash8>/ — format contract:
+# docs/test-envs.md (superproject). Re-provision after editing; changed
+# specs land in a fresh env.
+spec_version = 1
+description = "tdoa retarget smoke: owning project live-linked, official Transport_Drones 2.1.4 hard dep, AsphaltRoadsPatched 1.5.0 (civtorio's fork line) exercised via stub, DLC mods disabled"
+
+install = "dlc"
+
+# tdoa (src/ root) is the implicit root. Its hard dep Transport_Drones is a
+# portal mod (no project, not in the install) — resolved from the zip cache,
+# made available by the fetch below.
+roots = []
+chase_deps = true
+without = []
+
+# Optional deps are never chased (test-envs v0 contract) — they enter only via
+# stub. AsphaltRoadsPatched is stubbed so the Arci- tile/tech-gate branch
+# actually fires at data stage; the real 1.5.0 zip exists (install + cache),
+# so the stub resolves to the real mod, not a synthesis. The other optional
+# deps (pyindustry, space-exploration, railloader) stay OUT of this smoke:
+# round-2 scope per maintainer (retarget ticket tasks 7-10).
+stub = ["AsphaltRoadsPatched"]
+
+# Availability: pinned fv-2.1-line releases; already in the shared cache
+# (populated by civtorio's bundle work) — exact version entries short-circuit
+# offline.
+fetch = [
+  "Transport_Drones@2.1.4",
+  "AsphaltRoadsPatched@1.5.0",
+]
+
+[pins]
+# Determinism: the retarget gate pins exactly what info.json 0.2.0 floors.
+Transport_Drones = "2.1.4"
+AsphaltRoadsPatched = "1.5.0"

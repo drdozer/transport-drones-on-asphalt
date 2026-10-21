@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 21. 10. 2026
+  Features:
+    - Updated for Factorio 2.1.
+    Changed dependencies to the official Transport Drones 2.1 line (Transport_Drones >= 2.1.4),
+    which restores modded road-surface support upstream, replacing the drdozer fork
+    (now retired). Dropped the Meglinge-fork conflict (that line is retired).
+    Raised the optional AsphaltRoadsPatched floor to >= 1.5.0 (the Factorio 2.1 line, as used
+    by civtorio); the old 1.4.x line is Factorio 2.0 only.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.7
 Date: 30. 09. 2025
   Bugfixes:

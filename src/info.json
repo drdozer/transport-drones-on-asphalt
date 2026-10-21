@@ -1,16 +1,15 @@
 {
     "name": "Transport-Drones-On-Asphalt",
-    "version": "0.1.7",
+    "version": "0.2.0",
     "title": "Transport Drones on Asphalt",
     "author": "drdozer",
     "homepage": "https://github.com/drdozer/transport-drones-on-asphalt",
     "description": "Enable various surfaces as transport drone roads",
-    "factorio_version": "2.0",
+    "factorio_version": "2.1",
     "dependencies": [
-        "base >= 1.1",
-        "Transport_Drones_Drdozer_Fork >= 1.0.27",
-        "! Transport_Drones_Meglinge_Fork >= 1.0.26",
-        "? AsphaltRoadsPatched >= 1.4.7",
+        "base >= 2.1.0",
+        "Transport_Drones >= 2.1.4",
+        "? AsphaltRoadsPatched >= 1.5.0",
         "? pyindustry >= 1.5.4",
         "? space-exploration >= 0.6.82",
         "? railloader >= 1.1.6"
