@@ -1,0 +1,9 @@
+{
+    "name": "tdoa-harness",
+    "version": "0.1.0",
+    "title": "tdoa harness - depot delivery matrix",
+    "author": "drdozer",
+    "factorio_version": "2.1",
+    "description": "Headless scenario harness for Transport Drones on Asphalt: builds parallel depot rigs and drives road-integration cases end to end. Dev-only, not for release. See testing/run-scenario.py.",
+    "dependencies": ["Transport-Drones-On-Asphalt"]
+}

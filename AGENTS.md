@@ -19,10 +19,12 @@ layout 2026-10-21, matching the other own-mods; do NOT reintroduce `src/`
 or root-level layouts). `mod/` = info.json, data-updates.lua (~98 lines,
 the whole mod), changelog.txt, thumbnail.png. **No data.lua, no control.lua,
 no locale/** (runtime log strings are plain English — acceptable for logs).
-Root: `envs/` (`retarget-smoke.toml` — dlc gate;
-`py-smoke.toml` — py on the DLC-less 2.1 experimental install),
-`README.md`, `docs/`. Live-linked in the dlc install as
-`Transport-Drones-On-Asphalt` (0.2.1).
+Root: `envs/` (`retarget-smoke.toml` — dlc gate; `py-smoke.toml` — py on the
+DLC-less 2.1 experimental install; `solo.toml` — mandatory-dep-only cell),
+`testmods/tdoa-harness/` (the parameterised depot-matrix scenario:
+cases.lua is the add-a-one-line-row contract), `testing/run-scenario.py`
+(standalone matrix runner; exit 0/1/2), `README.md`, `docs/`.
+Live-linked in the dlc install as `Transport-Drones-On-Asphalt` (0.2.1).
 
 ## Invariants
 
@@ -68,16 +70,15 @@ the DLC-less `factorio_2_experimental` install.
 
 ## Verification quick recipe
 
-- Hermetic smoke: `devctl mods check transport-drones-on-asphalt --env
-  retarget-smoke` — env spec `envs/retarget-smoke.toml` (tdoa + official
-  Transport_Drones 2.1.4 + AsphaltRoadsPatched 1.5.0 via stub; exact set is
-  the spec's contract) and `--env py-smoke` for the py branch (envs/
-  py-smoke.toml on `factorio_2_experimental` — py refuses the Space Age
-  DLC). Branch-fire evidence is in each env's
-  `factorio-current.log` ("Adding AsphaltPaving compatibility.",
-  "Enabling Arci-...", "Adding pyindustry compatibility.", "Enabling
-  py-asphalt...") — the data-stage-only invariant makes the load smoke
-  a meaningful gate.
+- Hermetic smoke (data stage + load): `devctl mods check
+  transport-drones-on-asphalt --env retarget-smoke` — env spec
+  `envs/retarget-smoke.toml`.
+- Behaviour matrix (control stage, real drone deliveries): `python3
+  testing/run-scenario.py` — design contract + add-a-case rows:
+  `docs/harness.md`. Branch-fire evidence per env in the env's
+  `factorio-current.log`.
+- py branch envs must target `factorio_2_experimental` (py refuses the
+  Space Age DLC); never run py cases on dlc.
 - Hand-rigged scratch probes (`.cache/transport-drones-port/` pattern)
   are superseded by the env spec; keep rigs out.
 - `devctl mods build transport-drones-on-asphalt` builds the mod/ layout
@@ -90,6 +91,12 @@ interop test harness (2x2-block route-availability cases, carrier-testmod
 pattern), pyindustry scope, AsphaltRoadsPatched tile matrix, water-ford
 cobblestone-ford compat (blocked by the water-ford feature ticket until the
 maintainer requests it). Do not pull any of this into ordinary work.
+
+**Update 2026-10-21 (round 2, same day): the harness LANDED** —
+tasks 7 (harness), 8 (py scope), 9 (tile matrix) are IMPLEMENTED and green
+(`testing/run-scenario.py` + `docs/harness.md`); task 10 (water-ford
+compat) remains maintainer-gated. The py-branch behaviour asymmetry (no
+walking boost / tech gate) is recorded, pending maintainer.
 
 ## Docs index
 

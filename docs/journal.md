@@ -222,3 +222,67 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   battery green; docs/test-envs.md contract text updated.
 - Status quo: dist/ has 0.2.1 zip; live link tracks mod/ root (0.2.1);
   portal upload still the maintainer's call.
+
+## 2026-10-21 — round 2: depot-matrix harness (tasks 7-9 green)
+
+- **Design (maintainer-approved)**: the plan from the maintainer — one
+  request+fuel depot pair west of a 2×2 gap in a 2-wide transport-drones
+  road, supply depot east; the fuel-truck run is the harness self-check; the
+  fill reconnects (or must fail to) and the requester's real delivery is the
+  verdict; negatives (landfill/concrete/stone-path) plus an unfilled-gap
+  control. Roads 2 tiles wide throughout (maintainer). Runner =
+  standalone python (water-ford-testmod/run.py shape, exit 0/1/2); cases =
+  a parameterised table (cases.lua).
+- **Ground truth (upstream 2.1.4 source, zip-extracted)**: roads = tile-node
+  connectivity graph (`script/road_network.lua`); drones collide with all
+  NON-road tiles (their collision mask = all used tile layers minus
+  `transport_drone_road`, `colliding_with_tiles_only`) so a 2×2 gap across
+  both lanes = a hard split; `script_raised_set_tiles` hook does add_node /
+  remove_node for script-driven fills (the same idiom upstream's own
+  `script/self_test.lua` check_road_network_split uses); depots register via
+  their corpse tile (offsets per kind/direction: fuel S+3, request N−2,
+  supply S+2) and hold drones in `crafter_input`; request = `request-<item>`
+  recipe (built for every non-hidden item); dispatch consumes depot fuel
+  (burn) + a drone item; delivered goods land in the request's output
+  inventory — but that inventory is engine-managed (recipe output/pulse) so
+  **the verdict asserts the supply drain** (the only physical witness of
+  pathing across the gap). Upstream's own self_test (calibration instance,
+  patched copy + harness) delivered for real (50/item delivered by its own
+  phases), proving the launch shape (headless --create + --benchmark) is
+  sound — their silent failure in the first calibration attempt was MY
+  stale-copy mistake (cp into an existing dir), fixed.
+- **Lessons (engine/API)**: (1) arbitrary Lua globals are NOT persisted; only
+  `storage` (upstream bridges its script_data the same way) — harness uses
+  first-observed-wins scalars in storage + per-session world re-derivation.
+  (2) `script.on_tick` does not exist — on_tick = an event
+  (`defines.events.on_tick`). (3) file IO moved to `helpers`
+  (`helpers.write_file` / `table_to_json`). (4) runtime prototypes don't
+  expose data-stage fields (`place_as_tile`): cases are TILE-keyed; the
+  item→tile mapping only exists in the mod's road-tile-list (read
+  `road-tile-list:get_tile_filters(defines.selection_mode.select)`). (5)
+  cross-mod `require` is not canonicalized per path: a require of another
+  mod's script yields a SECOND, EMPTY module instance (its state lives in
+  the original's closures; only `storage` and remote interfaces bridge) —
+  introspection goes through the world + the mod's remotes, never a
+  required module's locals. (6) `--map-settings` / `--map-gen-settings`
+  deserialization demands the full required tree (a partial hand tree fails
+  "Key X not found at ROOT[y.path]"): pin only `{"seed": N}` in the gen
+  file; the save stores the complete settings and loads fine; the driver
+  purges each rig's box (oreguard lab purge pattern) so default-map water /
+  trees / enemies can't shape results. (7) `set_recipe` clears the crafting
+  inventory: insert drones AFTER the recipe. (8) 2.0 renamed the stone-brick
+  path tile → `stone-path`, the lamp item → `small-lamp`.
+- **Results (2026-10-21 matrix)**: solo (dlc; TD only): 5 pass + 3 skipped;
+  retarget-smoke (dlc; +ARP): 71 pass + 1 skipped (py absence, correct);
+  py-smoke (experimental; +pyindustry 3.1.6 +ARP): **72/72 pass** —
+  py-asphalt + the FULL 68-tile Arci matrix (every generated directional
+  variant, enumerated via road-set prefix expansion; zero hand-maintenance)
+  + negatives — every delivered case proven by a real supply drain through
+  the filled gap; zero fails, zero harness-invalids. Exit 0 on all three.
+- **Deliverables**: `testmods/tdoa-harness/` (info.json, cases.lua,
+  control.lua), `testing/run-scenario.py`, `envs/solo.toml`,
+  `docs/harness.md` (the design contract + add-a-case rows); AGENTS updated
+  (layout + recipe). Task 10 (water-ford cobblestone-ford compat) remains
+  maintainer-gated (BLOCKED BY the water-ford feature ticket). The
+  py-branch asymmetry (no walking boost / no tech gate) stands recorded for
+  the maintainer's call.

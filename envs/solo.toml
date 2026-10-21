@@ -1,0 +1,22 @@
+# Hermetic solo smoke for transport-drones-on-asphalt: mod + official
+# Transport_Drones only — the "just the mandatory dependency" cell of the
+# matrix (optional partners are absent by the chase contract: docs/test-envs.md
+# v0 — optional deps only enter via stub; none are listed here).
+# Provisions .cache/envs/dlc/solo-<hash8>/ — format contract: docs/test-envs.md.
+spec_version = 1
+description = "tdoa solo: owning project live-linked, official Transport_Drones 2.1.4 hard dep, no optional partners"
+
+install = "dlc"
+
+roots = []
+chase_deps = true
+without = []
+stub = []
+
+fetch = [
+  "Transport_Drones@2.1.4",
+]
+
+[pins]
+# Determinism: exactly what info.json 0.2.1 floors.
+Transport_Drones = "2.1.4"
