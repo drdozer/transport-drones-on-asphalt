@@ -275,7 +275,7 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
 - **Results (2026-10-21 matrix)**: solo (dlc; TD only): 5 pass + 3 skipped;
   retarget-smoke (dlc; +ARP): 71 pass + 1 skipped (py absence, correct);
   py-smoke (experimental; +pyindustry 3.1.6 +ARP): **72/72 pass** —
-  py-asphalt + the FULL 68-tile Arci matrix (every generated directional
+  py-asphalt + the FULL 66-tile Arci matrix (every generated directional
   variant, enumerated via road-set prefix expansion; zero hand-maintenance)
   + negatives — every delivered case proven by a real supply drain through
   the filled gap; zero fails, zero harness-invalids. Exit 0 on all three.
@@ -305,3 +305,46 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   (connection refused; rcon is server-scoped) and config keys
   `full-screen=false` / `master-volume=0` (hyphenated, [graphics]/[sound]).
 - Screenshots displayed via gwenview on :0 (never read into chat).
+
+## 2026-10-21 — round 2b: water-ford integration (0.2.2)
+
+- **Scope (maintainer request)**: water-ford = optional dep (>= 1.1.0); the
+  cobblestone ladder joins the drone road set — cobblestone-ford + cobblestone-
+  path via `is_road_tile` (the 2.x item prototype lever Transport_Drones'
+  data-final-fixes consumes; its process_road_item replaces the tile mask
+  with {transport_drone_road} + admits the tiles to the road-tile-list). The
+  WOODEN crossings deliberately stay unregistered (player-only by design —
+  their water-tile layer blocks drones; the ford-wooden-ford negative case
+  pins that in).
+- **Two road-classification paths collide here (the load-bearing discovery)**:
+  the raised-set-tiles path (proxy_tile.lua) admits tiles by the data-stage
+  road-tile-list — the ford would connect; the LOAD-PATH rebuild
+  (script/road_network.lua get_tiles) admits only tiles whose runtime mask
+  equals the transport-drone-road mask EXACTLY. water-ford's data-final-fixes
+  stamps the cobble ford tile with its `water-ford(-pedestrian)` layers AFTER
+  TD's rewrite → without normalisation the ford bridges in live runs but
+  silently loses its nodes after every save/load. tdoa 0.2.2 adds
+  mod/data-final-fixes.lua (runs last: TD -> water-ford -> tdoa) which
+  (1) restores the ford item's inverted water-only place condition (TD's road
+  processing would overwrite it with "may not be placed on water") and
+  (2) re-stamps the ford tile's mask to the road layer exactly.
+- **Verified from the check dump (not just reasoning)**: cobble ford + path
+  tile masks = {transport_drone_road} in the final dump; ford item
+  condition = {water_tile} invert=true; wooden ford natural + water-ford
+  stamps, no road layer. Load smoke PASS on ford-smoke-04fcea14
+  (`devctl mods check ... --env ford-smoke`).
+- **Behaviour matrix (ford-smoke env, real deliveries)**: null-road pass,
+  ford-cobblestone-ford pass (drain 1552), ford-cobblestone-path pass
+  (drain 1552), ford-wooden-ford blocked ✓ + all negatives ✓. Full matrix of
+  four envs (solo 5+6 skip, retarget 71+4, py 72+3, ford 8+3): zero fails.
+  Correction: the Arci expansion is 66 tiles, not the 68 recorded earlier.
+- **Deliberately NOT done**: walking-boost on the cobble tiles (unlike the
+  Arci branch — no walking-boost contract; water-ford keeps its own knobs:
+  ford 0.9, path 1.1); the tech-gate asymmetry stays recorded for py; the
+  env links the water-ford LIVE working tree (cobble ladder = in-flight
+  1.1.0 work) — the floor switches to the published zip when water-ford
+  releases.
+- **Test-runner lesson (from the maintainer)**: the showcase run's "silent
+  freeze" was the singleplayer LANDING DIALOGUE (cleared by pressing Tab) —
+  not a sim stall. Next showcase run should send Tab (xdotool key Tab) at
+  launch; recorded, fix deferred until that run happens (testing.md §6.3).

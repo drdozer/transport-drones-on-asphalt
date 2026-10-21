@@ -74,6 +74,28 @@ return
     note = "pyindustry 3.1.6's single py-asphalt tile (no walking boost, no tech gate on this branch — behaviour asymmetry pending maintainer)",
   },
 
+  -- ---- water-ford integration: cobble ladder + wooden negative ------------
+  -- (cases skip when water-ford is absent from the env — the ford-smoke env
+  -- carries it)
+  {
+    key = "ford-cobblestone-ford",
+    fill = { tile = "cobblestone-ford" },
+    expect = "road",
+    note = "water-ford's cobble ford joins the road set (is_road_tile); the open question: does a water-family tile drive the drone across the gap — the ford-smoke case that motivated the final-fixes mask normalisation",
+  },
+  {
+    key = "ford-cobblestone-path",
+    fill = { tile = "cobblestone-path" },
+    expect = "road",
+    note = "water-ford's land partner tile as drone road (no walking-boost contract, unlike the Arci branch)",
+  },
+  {
+    key = "ford-wooden-ford",
+    fill = { tile = "wooden-ford" },
+    expect = "blocked",
+    note = "by design: wooden crossings stay player-only — must NOT enter the road set; drones blocked on the wooden deck's water-tile layer",
+  },
+
   -- ---- negatives (base tiles; must never reconnect) ------------------------
   {
     key = "neg-landfill",

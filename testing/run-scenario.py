@@ -215,7 +215,7 @@ def main():
         i = argv.index("--ticks")
         ticks = int(argv[i + 1])
         del argv[i:i + 2]
-    stems = argv or ["solo", "retarget-smoke", "py-smoke"]
+    stems = argv or ["solo", "retarget-smoke", "py-smoke", "ford-smoke"]
     env_dirs = resolve_env_dirs(root, stems)
 
     overall = "pass"

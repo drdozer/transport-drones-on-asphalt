@@ -20,10 +20,12 @@ or root-level layouts). `mod/` = info.json, data-updates.lua (~98 lines,
 the whole mod), changelog.txt, thumbnail.png. **No data.lua, no control.lua,
 no locale/** (runtime log strings are plain English — acceptable for logs).
 Root: `envs/` (`retarget-smoke.toml` — dlc gate; `py-smoke.toml` — py on the
-DLC-less 2.1 experimental install; `solo.toml` — mandatory-dep-only cell),
+DLC-less 2.1 experimental install; `solo.toml` — mandatory-dep-only cell;
+`ford-smoke.toml` — water-ford cobble ladder + wooden negative),
 `testmods/tdoa-harness/` (the parameterised depot-matrix scenario:
 cases.lua is the add-a-one-line-row contract), `testing/run-scenario.py`
-(standalone matrix runner; exit 0/1/2), `README.md`, `docs/`.
+(standalone matrix runner; exit 0/1/2) + `testing/showcase.py` (visual,
+windowed), `README.md`, `docs/`.
 Live-linked in the dlc install as `Transport-Drones-On-Asphalt` (0.2.1).
 
 ## Invariants

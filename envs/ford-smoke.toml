@@ -1,0 +1,31 @@
+# Hermetic ford smoke for transport-drones-on-asphalt: the water-ford
+# integration cell — tdoa + official Transport_Drones 2.1.4 + the water-ford
+# submodule (its cobblestone ladder: cobblestone-ford + cobblestone-path road
+# cases; wooden ford negative = player-only by design).
+#
+# CAVEAT: water-ford resolves from the LINKED LIVE WORKING TREE (mods/water-ford,
+# its mod/ deployable root) — the cobble ladder currently exists only as that
+# session's in-flight work (towards 1.1.0); pin to a released zip once water-ford
+# publishes. The env is rebuilt per provision, so it always tests the working
+# tree as it stands.
+#
+# Provisions .cache/envs/dlc/ford-smoke-<hash8>/ — format contract:
+# docs/test-envs.md (superproject).
+spec_version = 1
+description = "tdoa ford smoke: tdoa + Transport_Drones 2.1.4 + water-ford live working tree (cobble ladder road cases + wooden ford negative)"
+
+install = "dlc"
+
+# water-ford is an own-mods submodule → resolves as a linked project's
+# deployable root (live code); its cobble ladder is IN-FLIGHT work there.
+roots = ["water-ford"]
+chase_deps = true
+without = []
+stub = []
+
+fetch = [
+  "Transport_Drones@2.1.4",
+]
+
+[pins]
+Transport_Drones = "2.1.4"

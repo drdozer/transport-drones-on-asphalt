@@ -73,6 +73,25 @@ if mods["pyindustry"] then
     end
 end
 
+-- for water-ford: the cobblestone ladder (water-crossing ford + its land
+-- partner) joins the transport-drone road set via is_road_tile — Transport_
+-- Drones' data-final-fixes roadifies the tiles + admits them to the road
+-- list. The WOODEN crossings deliberately stay out: they are player-only by
+-- design (their water-tile collision layer blocks drones; registering them
+-- would defeat the wooden ford's purpose — see the ford-smoke env's negative
+-- case). Walking speeds stay water-ford's own (path 1.1 / ford 0.9), unlike
+-- the Arci branch: no walking-boost contract here (pending maintainer).
+if mods["water-ford"] then
+    log("Adding water-ford compatibility.")
+    for _, name in ipairs({ "cobblestone-ford", "cobblestone-path" }) do
+        local item = data.raw.item[name]
+        if item and item.place_as_tile then
+            log("Enabling " .. name .. " as a road surface")
+            item.is_road_tile = true
+        end
+    end
+end
+
 if mods["railloader"] then
     log("Adding railloader compatiblity.")
     -- All things with a collision mask containing "item-layer" will be marked by transport drones

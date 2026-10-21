@@ -71,12 +71,20 @@ Specs live in `envs/`:
 | `solo.toml` | dlc | tdoa + Transport_Drones 2.1.4 | controls + negatives (the mandatory-only cell) |
 | `retarget-smoke.toml` | dlc | + AsphaltRoadsPatched 1.5.0 | the Arci integration |
 | `py-smoke.toml` | factorio_2_experimental | + pyindustry 3.1.6 (+ARP) | the py branch |
+| `ford-smoke.toml` | dlc | + water-ford (live working tree) | cobble ford/path as roads; wooden ford negative |
 
 **py always targets the DLC-less install**: py mods refuse the Space Age DLC
 (`pypostprocessing` hard-errors at data stage; the engine loads owned
 data-dir DLC mods regardless of the disabled flags — see test-envs.md's
 empirical correction). `factorio_2_experimental` (v2.1.21, base+core only)
-satisfies pyindustry's `base >= 2.1.21`.
+satisfies pyindustry's `base >= 2.1.21`. **ford-smoke links the water-ford
+live working tree** (the cobble ladder is in-flight 1.1.0 work): repin to
+the published zip once water-ford releases. tdoa's data-final-fixes
+normalisation is load-bearing for the cobble ford — Transport_Drones'
+road processing plus water-ford's stamps leave the ford either
+water-placeability-broken or with a mask the road network's load-path
+rebuild (road_network.lua get_tiles: road-exact mask required) silently
+drops; see docs/journal.md round 2b.
 
 Run:
 
@@ -86,9 +94,10 @@ Run:
 
 The runner is standalone (parses devctl.conf only, no devctl verbs/venv),
 overlays the harness onto each provisioned env by symlinks, and leaves the
-envs untouched. 2026-10-21 matrix result: **solo 5 pass/3 skipped,
-retarget 71 pass/1 skipped, py 72 pass — zero fails**; every delivered case
-proved by a real supply drain through the filled gap.
+envs untouched. 2026-10-21 matrix result (four envs): **solo 5 pass/6 skip,
+retarget 71 pass/4 skip, py 72 pass/3 skip, ford 8 pass/3 skip — zero
+fails**; every delivered case proved by a real supply drain through the
+filled gap.
 
 ## Showcase (visual runs)
 

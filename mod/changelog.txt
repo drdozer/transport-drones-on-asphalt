@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 21. 10. 2026
+  Features:
+    - Added water-ford as an optional dependency (>= 1.1.0): the cobblestone ford and cobblestone
+      path join the transport-drone road set via is_road_tile. The wooden crossings intentionally
+      stay player-only (unregistered; their water-tile layer blocks drones).
+    - New data-final-fixes normalisation: Transport_Drones' road processing overwrites road items'
+      place_as_tile with a non-inverted condition ("may not be placed on water") — restored the
+      cobblestone ford's water-only bridging rule; and road_network's load-path rebuild admits
+      tiles only with a road-exact collision mask — normalised the cobblestone ford tile after
+      water-ford's final-fixes stamps (verified by the ford-smoke depot-matrix cases).
+---------------------------------------------------------------------------------------------------
 Version: 0.2.1
 Date: 21. 10. 2026
   Bugfixes:
