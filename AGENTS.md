@@ -14,13 +14,14 @@ mod-specifics. Session history: `docs/journal.md`.
 
 ## Layout
 
-**`src/` deployable — leave as-is** (devctl builds it; do NOT churn to
-`mod/`). `src/` = info.json, data-updates.lua (~98 lines, the whole mod),
-changelog.txt, thumbnail.png. **No data.lua, no control.lua, no locale/**
-(runtime log strings are plain English — acceptable for logs).
-Root: `build/` (legacy scripts, provenance only), `envs/retarget-smoke.toml`
-(hermetic retarget-gate smoke), `README.md`, `docs/BUILDING.md`.
-Live-linked in the dlc install as `Transport-Drones-On-Asphalt` (0.2.0).
+**`mod/` canonical deployable** (refactored from the historical `src/`
+layout 2026-10-21, matching the other own-mods; do NOT reintroduce `src/`
+or root-level layouts). `mod/` = info.json, data-updates.lua (~98 lines,
+the whole mod), changelog.txt, thumbnail.png. **No data.lua, no control.lua,
+no locale/** (runtime log strings are plain English — acceptable for logs).
+Root: `envs/retarget-smoke.toml` (hermetic retarget-gate smoke),
+`README.md`, `docs/`. Live-linked in the dlc install as
+`Transport-Drones-On-Asphalt` (0.2.0).
 
 ## Invariants
 
@@ -40,6 +41,11 @@ Live-linked in the dlc install as `Transport-Drones-On-Asphalt` (0.2.0).
 is Cloudflare-blocked). The drdozer fork is RETIRED (repo archived
 2026-10-16, submodule removed; meglinge line dead on 2.1) — do not
 reintroduce fork deps; the Meglinge-fork conflict line is likewise gone.
+4. **Legacy build tooling is GONE, not superseded-in-place**: the old
+`build/build.sh` + `build/deploy.sh` (pre-devctl jq+zip packer and a
+live-dir-copier that would violate live-dir invariant 3) were removed with
+the 2026-10-21 `src/`→`mod/` refactor; `docs/BUILDING.md` retired with
+them. Build ONLY via `devctl mods build`.
 4. **build/ scripts are legacy, superseded by devctl**: `build/build.sh`
    (jq+zip packer, predates devctl) and `build/deploy.sh` (copies the zip
    into the live mods dir — against the current invariant; don't use it).
@@ -67,7 +73,7 @@ tiles.
   a meaningful gate.
 - Hand-rigged scratch probes (`.cache/transport-drones-port/` pattern)
   are superseded by the env spec; keep rigs out.
-- `devctl mods build transport-drones-on-asphalt` works on the src/ layout
+- `devctl mods build transport-drones-on-asphalt` builds the mod/ layout
   (zip ~1.4MB incl. thumbnail; game content only).
 
 ## Round-2 scope (pending, maintainer-gated)
@@ -82,7 +88,7 @@ maintainer requests it). Do not pull any of this into ordinary work.
 
 - `README.md` — human-facing feature list
 - `docs/BUILDING.md` — legacy build-script deps (bash/jq/zip)
-- `src/changelog.txt` — release history (0.1.0 → 0.1.7)
+- `mod/changelog.txt` — release history (0.1.0 → 0.2.0)
 - `docs/journal.md` — session work log
 - Superproject `inbox/retarget-transport-drones-on-asphalt-to-2.1.md` —
   the open work ticket (round-2 scope lives there),

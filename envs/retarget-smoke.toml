@@ -7,7 +7,7 @@ description = "tdoa retarget smoke: owning project live-linked, official Transpo
 
 install = "dlc"
 
-# tdoa (src/ root) is the implicit root. Its hard dep Transport_Drones is a
+# tdoa (mod/ root) is the implicit root. Its hard dep Transport_Drones is a
 # portal mod (no project, not in the install) — resolved from the zip cache,
 # made available by the fetch below.
 roots = []
