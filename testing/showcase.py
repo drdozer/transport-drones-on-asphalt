@@ -56,6 +56,18 @@ def nudge_focus():
                    timeout=20)
 
 
+def send_tab():
+    """Clear the singleplayer LANDING DIALOGUE (root cause of the 2026-10-21
+    'silent freeze' diagnosis by the maintainer: not a sim stall at all — the
+    landing screen pauses the game until Tab is pressed). The key is pressed
+    unconditionally at intervals; Tab in-game is view-level only and cannot
+    affect the simulation or the position-based screenshots."""
+    env = {**os.environ, "DISPLAY": ":0"}
+    subprocess.run(["xdotool", "search", "--class", "factorio", "key", "Tab"],
+                   env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                   timeout=20)
+
+
 def main():
     root = rs.find_root()
     stems = sys.argv[1:] or ["solo"]
@@ -109,10 +121,11 @@ def main():
         print(f"windowed client pid {proc.pid}", flush=True)
 
         results = None
+        game_since_launch = time.time()   # xdotool Tab cadence anchor
         probe_deadline = time.time() + WINDOW_BUDGET_S
         log_pos = 0
         last_progress = time.time()
-        nudged = False
+        next_tab_at = 20.0
         while time.time() < probe_deadline:
             time.sleep(3)
             if os.path.isfile(cur_log):
@@ -126,11 +139,14 @@ def main():
                     if "HARNESS" in line:
                         i = line.find("HARNESS")
                         print("   " + line[i:i + 150], flush=True)
-            if (time.time() - last_progress > 45 and proc.poll() is None
-                    and not nudged):
-                print("   no log progress for ~45 s — nudging window focus", flush=True)
+            if time.time() - game_since_launch > next_tab_at:
+                send_tab()          # landing dialogue pops after spawn; clear it
+                next_tab_at += 15
+            if time.time() - last_progress > 45 and proc.poll() is None:
+                print("   no log progress for ~45 s — sending Tab (landing\n"
+                      " dialogue is the known freeze cause) + focus nudge", flush=True)
+                send_tab()
                 nudge_focus()
-                nudged = True
                 last_progress = time.time()
             if os.path.exists(results_path):
                 results = json.load(open(results_path))
