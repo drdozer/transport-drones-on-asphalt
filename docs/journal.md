@@ -158,3 +158,28 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
 - **Portal upload**: NOT done — release publishing is the maintainer's
   explicit call (superproject ship-flow rule: never publish without
   approval). 0.2.0 zip built in dist/, ready.
+
+## 2026-10-21 — canonical structure refactor: src/ → mod/
+
+- **Maintainer-directed full refactor** to the canonical own-mod layout
+  (matches water-ford / civtorio / oreguard): `git mv src mod`; legacy
+  `build/build.sh` + `build/deploy.sh` REMOVED (pre-devctl packer; deploy.sh
+  would violate live-dir invariant 3 — flagged in the round-1 report and
+  folded into this refactor) + `docs/BUILDING.md` retired (was purely their
+  doc). `.gitignore` drops `target/` (legacy output), keeps `dist/`.
+- **AGENTS.md**: layout section now `mod/`-canonical ("do NOT reintroduce
+  src/" replaces the old do-not-churn note); invariant 4 rewritten: legacy
+  tooling removed, build ONLY via `devctl mods build`.
+- **Verification** (fresh, not cache-carried): env spec touched (comment
+  src/→mod/) → new content-addressed env `retarget-smoke-703902d2`; old env
+  pruned as superseded. `devctl mods build --report` from mod/: strict ok,
+  zip audit unchanged (2 changed files vs 0.1.7 — info.json/changelog only).
+  Smoke re-run: PASS, rc=0, 0 errors, 24× Arci is_road_tile lines —
+  identical evidence profile to round 1, now via the mod/ root.
+- **Live relink**: devctl detected the broken src/ link post-move and
+  repaired: `…/factorio_2_dlc/mods/Transport-Drones-On-Asphalt` → now
+  `…/transport-drones-on-asphalt/mod`. Status clean.
+- Layout now: `mod/` (deployable), `envs/`, `docs/`, `README.md`,
+  `AGENTS.md`, `dist/` (gitignored). Notable absence vs siblings: no
+  `portal/` yet — the 0.2.0 upload decision is still the maintainer's;
+  add the portal page source when that round happens.
