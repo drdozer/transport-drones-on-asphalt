@@ -363,3 +363,22 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   edit_details + the gallery sync; the dry-run plan is READY. LICENSE = MIT
   per the portal (no repo file yet — candidate follow-up); repo is 11
   commits ahead of origin (push = maintainer's call).
+
+## 2026-10-22 — co-release check: water-ford 1.1.0 published
+
+- Portal: water-ford 1.1.0 (sha1 b8387389…); the working tree is clean AT the
+  release commit. Released zip payload vs `mods/water-ford/mod/`: **byte-
+  identical** (diff -r clean) — the envspec pin-serve nuance (a pin prefers a
+  live root whose version matches the pin; lib/envspec.py ~511) is therefore
+  harmless here: the ford-smoke env's water-ford 1.1.0 IS the published
+  artifact.
+- envs/ford-smoke.toml repinned to the released zip (fetch + pin 1.1.0;
+  roots emptied, the optional dep enters via stub — the py-smoke pattern).
+  The byte-identity diff is the load-bearing evidence; noted as a doc
+  refinement candidate that "pin overrides live-root priority" holds only
+  across version mismatches.
+- Ford matrix on the repinned env: zero fails (cobble ford + path deliver —
+  drains @1552; wooden ford blocked; controls ✓). **tdoa 0.2.2 is verified
+  against the published water-ford 1.1.0 — the co-release check is green;
+  release unblocked pending the maintainer GO (push / GitHub release /
+  portal --yes + the legacy-image keep/drop call).**
