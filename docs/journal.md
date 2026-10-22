@@ -382,3 +382,22 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   against the published water-ford 1.1.0 — the co-release check is green;
   release unblocked pending the maintainer GO (push / GitHub release /
   portal --yes + the legacy-image keep/drop call).**
+
+## 2026-10-22 — 0.2.2 SHIPPED
+
+- Ship flow executed in order: push (14 commits to origin/main), GitHub
+  Release v0.2.2 with the dist zip
+  (https://github.com/drdozer/transport-drones-on-asphalt/releases/tag/v0.2.2),
+  then `devctl mods publish --yes` (maintainer GO this session).
+- Portal: release upload accepted; **post-upload verification: portal sha1
+  matches the local zip (4b6b3c97…)**; page polish (description 2465 chars +
+  summary 298) via edit_details; gallery: 5 images uploaded + display order
+  set (6 = 5 new + the 0.1.6-era legacy image kept, appended — per the tool's
+  default; no delete API exists, only display-list curation).
+- Read-side re-check: /full shows 0.2.2, MIT retained, 6 images, new summary/
+  description live. Publish log: `.cache/tdoa-publish-022.log`.
+- Release-unblocking notes for posterity: the publish freshness gate compares
+  the dist zip against HEAD (any commit — including docs-only ones), so a
+  rebuild was needed after the repin commit; the envspec pin-prefers-live
+  nuance is ticketed (`inbox/devctl-envspec-source-selection.md` in the
+  superproject).
