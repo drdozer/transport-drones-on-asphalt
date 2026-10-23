@@ -401,3 +401,23 @@ inventory `build/` + a nested `transport-drones-on-asphalt/` dir first.
   rebuild was needed after the repin commit; the envspec pin-prefers-live
   nuance is ticketed (`inbox/devctl-envspec-source-selection.md` in the
   superproject).
+
+## 2026-10-22 — image overhaul REVERTED (maintainer call)
+
+- The 5 showcase-crop gallery images were withdrawn from the portal page
+  (user: "all we can see is grass and a strip of asphalt") — display list set
+  to the original 0.1.6-era image only, via a direct images/edit POST (the
+  publish verb's sync only ever ADDS/reorders: leftover ids are always
+  appended, and with an empty portal/images/ the gallery section is skipped
+  entirely — display-removal is unreachable through the verb; candidate
+  tooling refinement, cf. the source-selection ticket pattern).
+- portal/images/ emptied (no local source for gallery images — none wanted
+  until a future set is approved); mod/thumbnail.png restored to the
+  original 1049x666 art. The SHIPPED 0.2.2 zip keeps the 288 crop (no
+  re-release of a shipped version) — the page's small square cover returns
+  to the original art with the next release (the portal derives the cover
+  from the release zip; no independent cover API).
+- **Process lesson (the maintainer's point)**: gallery/page content must be
+  shown to and approved by the maintainer BEFORE upload — the publish verb's
+  automatic page polish shipped unapproved images. Future image or text
+  changes: draft in-chat, explicit approval, then push.
