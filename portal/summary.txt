@@ -1,1 +1,1 @@
-Transport drones drive on more road surfaces: the full Asphalt Roads tile set, PyIndustry's py-asphalt, and water-ford's cobblestone ford + cobblestone path — all real drone-roads with connectivity intact. Wooden crossings stay player-only by design. Factorio 2.1, official Transport Drones 2.1.4+.
+Let transport drones drive on the roads you already build with: the full Asphalt Roads set, PyIndustry's py-asphalt, water-ford's cobblestone ford and path — and asphalt in space. Wooden crossings stay foot-traffic-only by design.
